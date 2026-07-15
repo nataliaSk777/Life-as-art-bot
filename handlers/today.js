@@ -1,5 +1,12 @@
-import { getOrCreateUser, setTodayQuality } from '../database/queries.js';
-import { mainMenu, qualitiesKeyboard } from '../keyboards/main.js';
+import {
+  getOrCreateUser,
+  setTodayQuality
+} from '../database/queries.js';
+
+import {
+  mainMenu,
+  qualitiesKeyboard
+} from '../keyboards/main.js';
 
 export function registerTodayHandlers(bot) {
   bot.hears('🎨 Сегодня', async (ctx) => {
@@ -19,7 +26,11 @@ export function registerTodayHandlers(bot) {
     await ctx.answerCbQuery();
 
     await ctx.reply(
-      `Хорошо. Сегодня я буду помогать тебе замечать ${quality.toLowerCase()}.\\n\\nМаленькое действие:\\n\\nостановись на 20 секунд и найди вокруг одну деталь, которая делает этот момент чуть живее.`,
+      `Хорошо. Сегодня я буду помогать тебе замечать ${quality.toLowerCase()}.
+
+Маленькое действие:
+
+Остановись на 20 секунд и найди вокруг одну деталь, которая делает этот момент чуть живее.`,
       mainMenu()
     );
   });
