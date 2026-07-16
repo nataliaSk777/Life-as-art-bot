@@ -1,37 +1,42 @@
 import {
-  getOrCreateUser,
-  setTodayQuality
+  getOrCreateUser
 } from '../database/queries.js';
 
 import {
-  mainMenu,
-  qualitiesKeyboard
+  dailyQualityKeyboard
 } from '../keyboards/main.js';
 
+import {
+  getOrCreateDailyQuality
+} from '../services/dailyQuality.js';
+
 export function registerTodayHandlers(bot) {
-  bot.hears('🎨 Сегодня', async (ctx) => {
-    await getOrCreateUser(ctx);
+  bot.hears(
+    '🎨 Сегодня',
+    async (ctx) => {
+      try {
+        const user =
+          await getOrCreateUser(ctx);
 
-    await ctx.reply(
-      'Какое качество ты хочешь добавить в сегодняшний день?',
-      qualitiesKeyboard()
-    );
-  });
+        const quality =
+          await getOrCreateDailyQuality(
+            user.id
+          );
 
-  bot.action(/^quality:(.+)$/, async (ctx) => {
-    const user = await getOrCreateUser(ctx);
-    const quality = ctx.match[1];
+        await ctx.reply(
+          `${quality.emoji} Сегодня — ${quality.title}.\n\n${quality.invitation}\n\nМаленькое действие:\n\n${quality.action}`,
+          dailyQualityKeyboard()
+        );
+      } catch (error) {
+        console.error(
+          'Ошибка раздела «Сегодня»:',
+          error
+        );
 
-    await setTodayQuality(user.id, quality);
-    await ctx.answerCbQuery();
-
-    await ctx.reply(
-      `Хорошо. Сегодня я буду помогать тебе замечать ${quality.toLowerCase()}.
-
-Маленькое действие:
-
-Остановись на 20 секунд и найди вокруг одну деталь, которая делает этот момент чуть живее.`,
-      mainMenu()
-    );
-  });
+        await ctx.reply(
+          'Не получилось открыть сегодняшний день. Попробуй ещё раз.'
+        );
+      }
+    }
+  );
 }
