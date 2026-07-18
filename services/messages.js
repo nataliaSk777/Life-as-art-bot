@@ -48,8 +48,15 @@ export async function sendEvening(
   bot,
   chatId
 ) {
+  await bot.telegram.sendMessage(
+    chatId,
+    'Вечерний вопрос.\n\nКакой момент сегодняшнего дня захотелось бы прожить ещё раз?\n\nНапиши одним сообщением. Даже если это была совсем маленькая искра.'
+  );
+
   const user =
-    await getUserByTelegramId(chatId);
+    await getUserByTelegramId(
+      chatId
+    );
 
   if (user) {
     await setAwaitingEveningAnswer(
@@ -57,9 +64,4 @@ export async function sendEvening(
       true
     );
   }
-
-  await bot.telegram.sendMessage(
-    chatId,
-    'Вечерний вопрос.\n\nКакой момент сегодняшнего дня захотелось бы прожить ещё раз?\n\nНапиши одним сообщением. Даже если это была совсем маленькая искра.'
-  );
 }
